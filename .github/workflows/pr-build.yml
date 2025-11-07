@@ -1,0 +1,51 @@
+name: PR Build and VSIX Artifact
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'src/**'
+      - 'templates/**'
+      - 'package.json'
+      - 'tsconfig.json'
+      - '.github/workflows/**'
+      - 'README.md'
+      - 'README_CN.md'
+  workflow_dispatch:
+
+jobs:
+  build-vsix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile TypeScript
+        run: npm run compile
+
+      - name: Add PR version suffix to package.json
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          node -e "const fs=require('fs'); const p=require('./package.json'); const sha=(process.env.GITHUB_SHA||'').slice(0,7); p.version = `${p.version}-pr.${sha}`; fs.writeFileSync('package.json', JSON.stringify(p, null, 2)+'\n');"
+
+      - name: Package VSIX
+        env:
+          VSIX_NAME: easy-rxmvvm-template-${{ github.sha }}.vsix
+        run: npx --yes vsce package -o "$VSIX_NAME"
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy-rxmvvm-plugin-vsix
+          path: easy-rxmvvm-template-${{ github.sha }}.vsix
+          if-no-files-found: error
