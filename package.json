@@ -3,7 +3,7 @@
   "displayName": "easy-rxmvvm-template",
   "description": "为 Flutter 项目提供 Easy RxMVVM 代码生成功能的 VS Code 插件。",
   "publisher": "Miloy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "engines": {
     "vscode": "^1.80.0"

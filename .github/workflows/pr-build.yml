@@ -37,19 +37,6 @@ jobs:
       - name: Compile TypeScript
         run: npm run compile
 
-      - name: Add PR version suffix to package.json
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const p = require('./package.json');
-          const sha = (process.env.GITHUB_SHA || '').slice(0, 7);
-          p.version = String(p.version) + '-pr.' + sha;
-          fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
-          console.log('New package.json version:', p.version);
-          NODE
-
       - name: Package VSIX
         env:
           VSIX_NAME: easy-rxmvvm-template-${{ github.sha }}.vsix
