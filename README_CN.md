@@ -91,6 +91,9 @@ Easy RxMVVM 用于加速 Dart 项目中基于 RxMVVM 的脚手架生成。它自
   - `flutter pub add rxdart easy_rxmvvm ff_annotation_route_library`
 - 模板代码会导入并依赖这些包；若缺失将导致导入/类型无法解析。
 
+## 关联项目
+- rxmvvm：https://github.com/MengLiMing/rxmvvm.git
+
 ## 开发
 - 环境依赖：Node.js 16+。
 - 安装依赖：`npm install`
@@ -99,3 +102,8 @@ Easy RxMVVM 用于加速 Dart 项目中基于 RxMVVM 的脚手架生成。它自
 
 ## 许可协议
 - 本项目采用 `MIT` 许可证。详见根目录 `LICENSE` 文件。
+
+## 版本 0.0.2 更新
+- 菜单项简化：移除“设置默认外部路由路径”独立菜单项；在“快速设置默认路由行为”选择 `external` 时直接弹出 `.dart` 文件选择并同步写入配置（含国际化提示）。
+- 文档完善：README 与 README_CN 增加语言切换入口；新增“关联项目”链接到 `rxmvvm` 仓库。
+- 许可证规范：新增 `LICENSE`（MIT），并在 README 中说明。

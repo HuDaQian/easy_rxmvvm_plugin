@@ -1,6 +1,13 @@
 # Changelog
 
 本文件记录扩展的版本更新概况与重要改动。
+## 0.0.2 - 规范版本号
+- 规范版本号，发布至marketplace。[Miloy.easy-rxmvvm-template](https://marketplace.visualstudio.com/items?itemName=Miloy.easy-rxmvvm-template)
+- 简化菜单项，将“设置默认外部路由路径”整合到“快速设置默认路由行为”的 external 流程中，支持本地化提示与文件选择。
+
+## 0.0.2 — Version Normalization & CI/Publish (English Summary)
+- Version normalized and published to the Marketplace: [Miloy.easy-rxmvvm-template](https://marketplace.visualstudio.com/items?itemName=Miloy.easy-rxmvvm-template)
+- Menu simplification: removed the standalone “Set Default External Route Path”. In the “Quick Set Default Route Behavior” command, choosing `external` now prompts for a `.dart` file and writes both configurations, with localized messages.
 
 ## 0.0.1 — 初始发布
 - 发布 Easy RxMVVM VS Code 扩展的第一个版本。

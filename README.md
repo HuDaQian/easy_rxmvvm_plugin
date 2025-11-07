@@ -92,6 +92,9 @@ Easy RxMVVM accelerates scaffolding for Dart projects using RxMVVM patterns. It 
   - `flutter pub add rxdart easy_rxmvvm ff_annotation_route_library`
 - The generated templates import and rely on these packages; missing deps will cause unresolved imports/types.
 
+## Related
+- rxmvvm: https://github.com/MengLiMing/rxmvvm.git
+
 ## Development
 - Requirements: Node.js 16+.
 - Install deps: `npm install`
@@ -100,3 +103,8 @@ Easy RxMVVM accelerates scaffolding for Dart projects using RxMVVM patterns. It 
 
 ## License
 - Licensed under `MIT`. See `LICENSE` for details.
+
+## What's New in 0.0.2
+- Menu simplification: Removed the standalone “Set Default External Route Path” entry. When choosing `external` in “Quick Set Default Route Behavior”, a `.dart` file picker appears immediately and writes both configurations, with localized prompts.
+- Docs improvement: Added language switch links between English and Chinese READMEs; added a “Related” link to the `rxmvvm` repository.
+- Licensing: Added the `LICENSE` file (MIT) and referenced it in READMEs.
