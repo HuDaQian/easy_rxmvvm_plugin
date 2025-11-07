@@ -1,5 +1,7 @@
 # Easy RxMVVM VS Code 扩展
 
+语言切换：[English README](README.md)
+
 Easy RxMVVM 用于加速 Dart 项目中基于 RxMVVM 的脚手架生成。它自动生成页面与视图模型模板、管理可复用的路由生命周期文件，并提供全局重复文件保护。扩展内的所有用户提示均支持中英双语，随 VS Code 语言自动切换（`zh*` 显示中文，否则显示英文）。
 
 **主要能力**

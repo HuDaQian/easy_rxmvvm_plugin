@@ -11,6 +11,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HuDaQian/easy_rxmvvm_plugin.git"
+  },
   "keywords": [
     "easy-rxmvvm",
     "rxmvvm",

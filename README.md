@@ -1,5 +1,7 @@
 # Easy RxMVVM VS Code Extension
 
+Language: [中文说明](README_CN.md)
+
 Easy RxMVVM accelerates scaffolding for Dart projects using RxMVVM patterns. It generates page and view model templates, manages a reusable route lifecycle file, and provides safe guards against duplicate files. All user-facing messages are bilingual and adapt to your VS Code locale (Chinese if `zh*`, otherwise English).
 
 **Key Features**
