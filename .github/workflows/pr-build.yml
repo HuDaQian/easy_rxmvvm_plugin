@@ -36,7 +36,7 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
         run: |
-          node -e "const fs=require('fs'); const p=require('./package.json'); const sha=(process.env.GITHUB_SHA||'').slice(0,7); p.version = `${p.version}-pr.${sha}`; fs.writeFileSync('package.json', JSON.stringify(p, null, 2)+'\n');"
+          node -e 'const fs=require("fs"); const p=require("./package.json"); const sha=(process.env.GITHUB_SHA||"").slice(0,7); p.version = p.version + "-pr." + sha; fs.writeFileSync("package.json", JSON.stringify(p, null, 2) + "\n");'
 
       - name: Package VSIX
         env:
