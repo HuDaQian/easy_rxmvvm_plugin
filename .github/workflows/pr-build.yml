@@ -23,8 +23,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20.18.1"
           cache: "npm"
+
+      - name: Show Node and npm versions
+        run: |
+          node -v
+          npm -v
 
       - name: Install dependencies
         run: npm ci
@@ -48,7 +53,7 @@ jobs:
       - name: Package VSIX
         env:
           VSIX_NAME: easy-rxmvvm-template-${{ github.sha }}.vsix
-        run: npx --yes vsce package -o "$VSIX_NAME"
+        run: npx --yes @vscode/vsce package -o "$VSIX_NAME"
 
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
