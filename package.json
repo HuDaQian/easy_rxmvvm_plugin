@@ -1,0 +1,132 @@
+{
+  "name": "easy-rxmvvm-template",
+  "displayName": "easy-rxmvvm-template",
+  "description": "为 Flutter 项目提供 Easy RxMVVM 代码生成功能的 VS Code 插件。",
+  "publisher": "Miloy",
+  "version": "0.0.1",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "easy-rxmvvm",
+    "rxmvvm",
+    "flutter",
+    "code-generation",
+    "dart",
+    "rxdart"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "submenus": [
+      {
+        "id": "easyRxmvvm.explorerGroup",
+        "label": "Easy RxMVVM"
+      }
+    ],
+    "configuration": {
+      "title": "Easy RxMVVM",
+      "properties": {
+        "easyRxmvvm.globalDuplicateCheckEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用全项目同名查重（默认开启）",
+          "scope": "machine"
+        },
+        "easyRxmvvm.globalDuplicateCheckRoutesOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "仅对 route_lifecycle_state 文件执行全局同名查重（默认关闭）",
+          "scope": "machine"
+        },
+        "easyRxmvvm.defaultRouteBehavior": {
+          "type": "string",
+          "enum": [
+            "ask",
+            "none",
+            "builtin",
+            "external"
+          ],
+          "default": "ask",
+          "description": "为 Page 选择路由生命周期的默认行为：询问、不开启、使用内置、关联外部文件",
+          "scope": "machine"
+        },
+        "easyRxmvvm.defaultExternalRoutePath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "当 `defaultRouteBehavior=external` 时使用的外部路由生命周期文件路径，支持绝对路径或相对路径（相对工作区根或目标目录）。可通过命令面板或右键菜单运行 `Easy RxMVVM: Set Default External Route Path` 进行文件选择。",
+          "scope": "machine"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "easy-rxmvvm-plugin.openTemplatesFolder",
+        "title": "Easy RxMVVM: Open Template Folder"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.setDefaultExternalRoutePath",
+        "title": "Easy RxMVVM: Set Default External Route Path"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.generateTemplate",
+        "title": "Easy RxMVVM: Generate File From Template"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.resetTemplates",
+        "title": "Easy RxMVVM: Reset Templates"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.backupAndResetTemplates",
+        "title": "Easy RxMVVM: Backup and Reset Templates"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.restoreTemplatesFromBackup",
+        "title": "Easy RxMVVM: Restore Templates From Backup"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.addRouteLifecycleState",
+        "title": "Easy RxMVVM: Add Route Lifecycle State"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.toggleGlobalDuplicateCheck",
+        "title": "Easy RxMVVM: Toggle Global Duplicate Check"
+      },
+      {
+        "command": "easy-rxmvvm-plugin.quickSetDefaultRouteBehavior",
+        "title": "Easy RxMVVM: Quick Set Default Route Behavior"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "easy-rxmvvm-plugin.generateTemplate",
+          "group": "easyRxmvvm@1",
+          "when": "resourceScheme == file && (resourceExtname == .dart || explorerResourceIsFolder)"
+        },
+        {
+          "command": "easy-rxmvvm-plugin.addRouteLifecycleState",
+          "group": "easyRxmvvm@2",
+          "when": "resourceScheme == file && (resourceExtname == .dart || explorerResourceIsFolder)"
+        },
+        {
+          "command": "easy-rxmvvm-plugin.quickSetDefaultRouteBehavior",
+          "group": "easyRxmvvm@3",
+          "when": "resourceScheme == file && (resourceExtname == .dart || explorerResourceIsFolder)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
