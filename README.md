@@ -87,9 +87,9 @@ Easy RxMVVM accelerates scaffolding for Dart projects using RxMVVM patterns. It 
 ## Dependencies
 - `rxdart` — reactive streams for Dart.
 - `easy_rxmvvm` — MVVM helpers used by generated templates.
-- `ff_annotation_route_library` — route annotations and codegen helpers.
+- `ff_annotation_route_library (3.2.1)` — route annotations and codegen helpers.
 - Add these to your project’s `pubspec.yaml`, or run:
-  - `flutter pub add rxdart easy_rxmvvm ff_annotation_route_library`
+  - `flutter pub add rxdart easy_rxmvvm ff_annotation_route_library:3.2.1`
 - The generated templates import and rely on these packages; missing deps will cause unresolved imports/types.
 
 ## Related

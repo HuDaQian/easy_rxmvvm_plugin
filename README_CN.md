@@ -86,9 +86,9 @@ Easy RxMVVM 用于加速 Dart 项目中基于 RxMVVM 的脚手架生成。它自
 ## 依赖
 - `rxdart`：Dart 响应式流库。
 - `easy_rxmvvm`：生成模板所使用的 MVVM 辅助库。
-- `ff_annotation_route_library`：路由注解与代码生成辅助。
+- `ff_annotation_route_library`（支持版本：`3.2.1`）：路由注解与代码生成辅助。
 - 请在项目的 `pubspec.yaml` 中添加这些依赖，或执行：
-  - `flutter pub add rxdart easy_rxmvvm ff_annotation_route_library`
+  - `flutter pub add rxdart easy_rxmvvm ff_annotation_route_library:3.2.1`
 - 模板代码会导入并依赖这些包；若缺失将导致导入/类型无法解析。
 
 ## 关联项目
