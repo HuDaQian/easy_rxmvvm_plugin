@@ -37,6 +37,13 @@ Easy RxMVVM 用于加速 Dart 项目中基于 RxMVVM 的脚手架生成。它自
   - `external`：使用外部文件（默认路径或你手动选择）。若该文件未声明合适的生命周期类，会回退到 `builtin`（复用或生成）。导入路径在满足条件时使用 package 方式，否则使用相对路径。
 - 重复检测：在开启 `globalDuplicateCheckEnabled` 时，若待生成文件名（除生命周期文件外）在工作区已存在，会直接报冲突并终止生成；生命周期文件使用复用/后缀逻辑处理。
 
+**生成组件 Widget**（`easy-rxmvvm-plugin.generateWidget`）
+- 目录或 `.dart` 文件右键菜单命令。输入组件名称后，根据 `templates/appwidget.dart.tpl` 生成组件。
+- ViewModel 处理：可选择创建新的 ViewModel 文件，或使用占位符保留“复用现有 ViewModel”的导入与创建调用（以 TODO 标记）。
+- 命名规则：若名称包含 `widget`/`component` 则保持一致，否则默认生成 `_widget.dart`；选择创建新的 ViewModel 时会额外生成 `_viewmodel.dart`。
+- 路由生命周期：组件不包含路由生命周期逻辑；模板不含 `FFRoute` 相关内容。
+- 重复检测：与页面生成一致，开启全局查重时若目标文件名已存在则中止生成。
+
 **添加路由生命周期文件**（`easy-rxmvvm-plugin.addRouteLifecycleState`）
 - 在目标目录通过模板添加 `route_lifecycle_state.dart`。
 - 若工作区存在同名且可复用的文件（包含继承 `State<...>` 的生命周期类），则直接复用，不新增文件。否则按需生成 `route_lifecycle_state_2.dart`、`route_lifecycle_state_3.dart` 等避免冲突。
@@ -107,3 +114,11 @@ Easy RxMVVM 用于加速 Dart 项目中基于 RxMVVM 的脚手架生成。它自
 - 菜单项简化：移除“设置默认外部路由路径”独立菜单项；在“快速设置默认路由行为”选择 `external` 时直接弹出 `.dart` 文件选择并同步写入配置（含国际化提示）。
 - 文档完善：README 与 README_CN 增加语言切换入口；新增“关联项目”链接到 `rxmvvm` 仓库。
 - 许可证规范：新增 `LICENSE`（MIT），并在 README 中说明。
+
+## 版本 0.0.3 更新
+- 新增命令：生成组件 Widget（支持选择创建新 ViewModel 或占位复用）。
+- 新增模板：`templates/appwidget.dart.tpl`（不包含 `FFRoute`，使用 `ViewModelConsumerStatefulWidget` 与显式 `State<$nameWidget>`）。
+- 命名规则：根据输入智能生成 `_widget.dart`/`_component.dart`；需要时生成 `_viewmodel.dart`。
+- 修复：去除 `$createVMCall` 占位符末尾分号，避免与模板中的分号重复。
+- 菜单标题更清晰地区分页面与组件生成。
+- 文档：补充模板缓存管理与升级迁移建议；升级后可通过“打开模板目录”与“重置/备份/恢复模板”管理自定义模板。

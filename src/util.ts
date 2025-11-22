@@ -502,6 +502,82 @@ export async function generateEasyRxmvvmTemplate(
   }
 }
 
+export async function generateEasyRxmvvmWidget(
+  context: vscode.ExtensionContext,
+  name: string,
+  targetUri: vscode.Uri,
+  options: { createViewModel: boolean }
+): Promise<void> {
+  await ensureTemplatesFolder(context);
+  const dstFolder = await getTargetDirectory(targetUri);
+  const srcRoot = config.templatesFolderPath;
+
+  const baseRaw = (name || '').trim();
+  const lower = baseRaw.toLowerCase();
+  const widgetOutName = lower.includes('widget') || lower.includes('component')
+    ? (baseRaw.endsWith('.dart') ? baseRaw : `${baseRaw}.dart`)
+    : `${baseRaw}_widget.dart`;
+  const outFiles: string[] = [widgetOutName];
+  const vmOutName = options.createViewModel ? `${baseRaw}_viewmodel.dart` : undefined;
+  if (vmOutName) { outFiles.push(vmOutName); }
+
+  // 覆盖检查
+  const collisions: string[] = [];
+  for (const outName of outFiles) {
+    const outPath = path.join(dstFolder, outName);
+    if (await exists(outPath)) {
+      collisions.push(outName);
+    }
+  }
+  if (collisions.length > 0) {
+    throw new Error(`以下文件已存在：${collisions.join(', ')}`);
+  }
+
+  // 全局同名查重（受配置开关控制）
+  const cfg = vscode.workspace.getConfiguration('easyRxmvvm');
+  const globalCheckEnabled = cfg.get<boolean>('globalDuplicateCheckEnabled', true);
+  if (globalCheckEnabled) {
+    const globalConflicts = await findGlobalConflicts(outFiles);
+    if (globalConflicts.size > 0) {
+      const msg = Array.from(globalConflicts.entries())
+        .map(([fn, paths]) => `${fn}: ${paths.join(', ')}`)
+        .join(' | ');
+      throw new Error(`全局同名冲突，以下文件名在项目中已存在：${msg}`);
+    }
+  }
+
+  // 写入 Widget 文件
+  const widgetTpl = path.join(srcRoot, 'appwidget.dart.tpl');
+  const widgetDst = path.join(dstFolder, widgetOutName);
+  const widgetTplStat = await fs.stat(widgetTpl).catch(() => undefined);
+  if (!widgetTplStat || !widgetTplStat.isFile()) {
+    throw new Error('Template file not found: appwidget.dart.tpl');
+  }
+  const extras = options.createViewModel
+    ? {
+        $viewModelImport: `import '${baseRaw}_viewmodel.dart';`,
+        $viewModelClass: `${toPascalCase(baseRaw)}ViewModel`,
+        $createVMCall: `${toPascalCase(baseRaw)}ViewModel()`,
+      }
+    : {
+        $viewModelImport: `// TODO: import your ViewModel file here\n// import 'path/to/your_viewmodel.dart';`,
+        $viewModelClass: 'YourViewModel',
+        $createVMCall: '/* TODO: return your ViewModel instance */ throw UnimplementedError()',
+      };
+  await writeFileWithNameTemplate(widgetTpl, widgetDst, baseRaw, extras);
+
+  // 可选生成 ViewModel 文件
+  if (vmOutName) {
+    const vmTpl = path.join(srcRoot, 'viewmodel.dart.tpl');
+    const vmDst = path.join(dstFolder, vmOutName);
+    const vmTplStat = await fs.stat(vmTpl).catch(() => undefined);
+    if (!vmTplStat || !vmTplStat.isFile()) {
+      throw new Error('Template file not found: viewmodel.dart.tpl');
+    }
+    await writeFileWithNameTemplate(vmTpl, vmDst, baseRaw);
+  }
+}
+
 export async function addRouteLifecycleStateFile(
   context: vscode.ExtensionContext,
   targetUri: vscode.Uri,

@@ -37,6 +37,13 @@ Easy RxMVVM accelerates scaffolding for Dart projects using RxMVVM patterns. It 
   - `external`: Uses an external file (either the default path or a file you pick). If the file does not declare a suitable lifecycle class, it falls back to the builtin strategy (reuse or generate). Imports are computed as package imports when possible, otherwise relative.
 - Duplicate detection: With `globalDuplicateCheckEnabled` on, the extension fails early if a generated filename already exists anywhere in the workspace (excluding `route_lifecycle_state*.dart`, which uses reuse/suffix logic instead).
 
+**Generate Component Widget** (`easy-rxmvvm-plugin.generateWidget`)
+- Context-menu command on folders or `.dart` files. Prompts for a component name, then generates a widget based on `templates/appwidget.dart.tpl`.
+- ViewModel handling: choose to create a new ViewModel file or use an existing one via placeholders (imports and creation call are inserted or left as TODOs accordingly).
+- Naming rules: respects input containing `widget` or `component`; otherwise defaults to `_widget.dart`. Optional `_viewmodel.dart` is generated when creating a new ViewModel.
+- Route lifecycle: not included for widgets; no `FFRoute` content.
+- Duplicate detection: same global check applies; generation aborts if target filenames already exist when enabled.
+
 **Add Route Lifecycle State** (`easy-rxmvvm-plugin.addRouteLifecycleState`)
 - Adds a `route_lifecycle_state.dart` from the template into the target directory.
 - If a same-named file exists globally and is reusable (contains a class extending a `State<...>` lifecycle), it is reused and no new file is created. Otherwise, the extension generates `route_lifecycle_state_2.dart`, `route_lifecycle_state_3.dart`, etc., to avoid conflicts.
@@ -108,3 +115,11 @@ Easy RxMVVM accelerates scaffolding for Dart projects using RxMVVM patterns. It 
 - Menu simplification: Removed the standalone “Set Default External Route Path” entry. When choosing `external` in “Quick Set Default Route Behavior”, a `.dart` file picker appears immediately and writes both configurations, with localized prompts.
 - Docs improvement: Added language switch links between English and Chinese READMEs; added a “Related” link to the `rxmvvm` repository.
 - Licensing: Added the `LICENSE` file (MIT) and referenced it in READMEs.
+
+## What's New in 0.0.3
+- New command: Generate Component Widget, with optional ViewModel creation or placeholder-based reuse.
+- New template: `templates/appwidget.dart.tpl` (no `FFRoute`, uses `ViewModelConsumerStatefulWidget` and explicit `State<$nameWidget>`).
+- Naming rules: smarter defaults for `_widget.dart` and `_component.dart`; `_viewmodel.dart` when requested.
+- Fix: removed trailing semicolon from the `$createVMCall` placeholder to prevent double semicolons.
+- Menu titles clarified to distinguish page vs. component generation.
+- Docs: added guidance on template cache management; after upgrading, use “Open Template Folder” and “Reset/Backup/Restore Templates” to migrate customizations.

@@ -1,11 +1,45 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { openTemplatesFolder, getCurrentPossibleUri, generateEasyRxmvvmTemplate, resetTemplatesFolder, backupTemplatesFolder, listTemplateBackups, restoreTemplatesFromBackup, backupAndResetTemplates, addRouteLifecycleStateFile } from './util';
+import { openTemplatesFolder, getCurrentPossibleUri, generateEasyRxmvvmTemplate, generateEasyRxmvvmWidget, resetTemplatesFolder, backupTemplatesFolder, listTemplateBackups, restoreTemplatesFromBackup, backupAndResetTemplates, addRouteLifecycleStateFile } from './util';
 import { t } from './i18n';
 
 export function activate(context: vscode.ExtensionContext) {
   // helloWorld 命令已移除
+
+  // 检测版本变更并按需自动升级模板缓存
+  (async () => {
+    try {
+      const ext = vscode.extensions.getExtension('Miloy.easy-rxmvvm-template');
+      const currentVersion = (ext?.packageJSON?.version as string) || '0.0.0';
+      const lastVersion = context.globalState.get<string>('easyRxmvvm.lastUsedVersion', '');
+      if (currentVersion !== lastVersion) {
+        const cfg = vscode.workspace.getConfiguration('easyRxmvvm');
+        const autoUpdate = cfg.get<boolean>('autoUpdateTemplatesOnUpgrade', true);
+        if (autoUpdate) {
+          try {
+            // 备份旧缓存（若存在）
+            let snapshotPath: string | undefined;
+            try {
+              snapshotPath = await backupTemplatesFolder();
+            } catch (_) {
+              // 忽略备份错误，以免阻断初始化
+            }
+            // 初始化当前版本缓存为内置模板
+            await resetTemplatesFolder(context);
+            const msgZh = `检测到扩展升级至 ${currentVersion}，已初始化当前版本模板缓存${snapshotPath ? `；旧缓存已备份至：${snapshotPath}` : ''}。如需恢复或迁移，可运行“Easy RxMVVM: Restore Templates From Backup”。`;
+            const msgEn = `Detected upgrade to ${currentVersion}. Initialized template cache for this version${snapshotPath ? `; previous cache backed up to: ${snapshotPath}` : ''}. To restore or migrate, run "Easy RxMVVM: Restore Templates From Backup".`;
+            vscode.window.showInformationMessage(t(msgZh, msgEn));
+          } catch (err: any) {
+            vscode.window.showWarningMessage(t(`升级模板缓存时发生错误：${err?.message ?? String(err)}。你可手动运行“重置模板”或“备份并重置模板”。`, `Error updating template cache during upgrade: ${err?.message ?? String(err)}. You can manually run "Reset Templates" or "Backup and Reset Templates".`));
+          }
+        }
+        await context.globalState.update('easyRxmvvm.lastUsedVersion', currentVersion);
+      }
+    } catch (_) {
+      // 忽略版本检测错误，不影响正常使用
+    }
+  })();
 
   const openTemplatesCmd = vscode.commands.registerCommand(
     'easy-rxmvvm-plugin.openTemplatesFolder',
@@ -86,6 +120,51 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
   context.subscriptions.push(quickSetDefaultRouteBehaviorCmd);
+
+  const generateWidgetCmd = vscode.commands.registerCommand(
+    'easy-rxmvvm-plugin.generateWidget',
+    async (uri?: vscode.Uri) => {
+      try {
+        let targetUri = getCurrentPossibleUri(uri);
+        if (!targetUri) {
+          vscode.window.showWarningMessage(t('请先打开工作区或文件所在路径', 'Please open a workspace or file path first'));
+          return;
+        }
+
+        const name = await vscode.window.showInputBox({
+          title: t('输入组件名称以生成 Widget', 'Enter a component name to generate Widget'),
+          placeHolder: t('例如：user_list、UserList 或 userList；若包含 widget/component 则文件按原名输出', 'e.g., user_list, UserList or userList; if contains widget/component, file uses original name'),
+          ignoreFocusOut: true,
+          validateInput: async (text: string) => {
+            if (!text || !text.trim()) {
+              return t('名称不能为空', 'Name cannot be empty');
+            }
+            return null;
+          },
+        });
+        if (!name) { return; }
+
+        const pick = await vscode.window.showQuickPick(
+          [
+            { label: t('创建 ViewModel（推荐）', 'Create ViewModel (recommended)'), value: 'create' },
+            { label: t('使用已有 ViewModel（模板中保留占位符）', 'Use existing ViewModel (template placeholders)'), value: 'use-existing' },
+          ],
+          { canPickMany: false, placeHolder: t('选择 ViewModel 处理方式', 'Choose ViewModel handling'), ignoreFocusOut: true }
+        );
+        if (!pick?.value) { return; }
+
+        const createViewModel = pick.value === 'create';
+        await generateEasyRxmvvmWidget(context, name.trim(), targetUri!, { createViewModel });
+        const msg = createViewModel
+          ? t(`已生成 Widget 与 ViewModel（名称：${name.trim()}）`, `Generated Widget and ViewModel (name: ${name.trim()})`)
+          : t(`已生成 Widget（使用占位符，请补充 ViewModel）`, 'Generated Widget (using placeholders; please wire your ViewModel)');
+        vscode.window.showInformationMessage(msg);
+      } catch (error: any) {
+        vscode.window.showErrorMessage(t(`生成失败：${error?.message ?? String(error)}`, `Generation failed: ${error?.message ?? String(error)}`));
+      }
+    }
+  );
+  context.subscriptions.push(generateWidgetCmd);
 
   const generateTemplateCmd = vscode.commands.registerCommand(
     'easy-rxmvvm-plugin.generateTemplate',

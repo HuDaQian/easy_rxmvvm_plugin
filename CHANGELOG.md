@@ -1,6 +1,21 @@
 # Changelog
 
 本文件记录扩展的版本更新概况与重要改动。
+## 0.0.3 - 组件生成与模板修复
+- 新增命令：`Easy RxMVVM: Generate Component Widget`，支持在目录或 `.dart` 文件处右键生成组件级 Widget。
+- 新增模板：`templates/appwidget.dart.tpl`，去除 `FFRoute` 内容，采用 `easy_rxmvvm` 的 `ViewModelConsumerStatefulWidget`/`State<$nameWidget>` 结构。
+- 命名规则：根据输入名称智能生成文件名（含 `widget`/`component` 时遵循；默认生成 `_widget.dart`），可选创建或占位复用 ViewModel。
+- 修复：`$createVMCall` 占位符移除末尾分号，避免与模板中的分号重复导致语法错误。
+- 菜单文案调整：将页面与组件的生成命令标题更清晰地区分与命名。
+- 文档：补充模板缓存的打开、重置、备份与恢复说明，指导升级后如何迁移自定义模板。
+
+## 0.0.3 — Component Widget Generation & Template Fixes (English Summary)
+- New command: `Easy RxMVVM: Generate Component Widget` to scaffold component-level widgets from the explorer context.
+- New template: `templates/appwidget.dart.tpl` without `FFRoute`, using `easy_rxmvvm` `ViewModelConsumerStatefulWidget` and explicit `State<$nameWidget>`.
+- Naming rules: respect input containing `widget`/`component`; otherwise default to `_widget.dart`. Optional ViewModel creation or placeholder-based reuse.
+- Fix: removed the trailing semicolon from `$createVMCall` to avoid double semicolons with the template.
+- Menu titles updated to clearly differentiate page and component generation.
+- Docs: added guidance on template cache management (open, reset, backup, restore) and how to migrate custom templates after upgrading.
 ## 0.0.2 - 规范版本号
 - 规范版本号，发布至marketplace。[Miloy.easy-rxmvvm-template](https://marketplace.visualstudio.com/items?itemName=Miloy.easy-rxmvvm-template)
 - 简化菜单项，将“设置默认外部路由路径”整合到“快速设置默认路由行为”的 external 流程中，支持本地化提示与文件选择。
